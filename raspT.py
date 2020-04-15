@@ -25,9 +25,8 @@ def createPackage(data, length):
     return Bits().join(Bits(uint=x, length=length) for x in data) 
 
 names, bits, current_disparity = encArray8b10b(img_bytes, current_disparity=-1)
-start = time.time()
+
 img_bits_encoded = createPackage(bits, 10)
-end = time.time() - start
-print(end)
+
 
 #ser.write(img_bytes)
