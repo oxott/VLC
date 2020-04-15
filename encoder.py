@@ -1,5 +1,8 @@
-#Input 8 bit in the format 0bHGF EDCBA will be encoded as a 10 bit 0babcdei fghj
+#Arquivo com as funções necessárias para codificação
 
+from bitstring import Bits
+
+#Tabela de conversão 3b4b
 table_3b4b = {
     0b000: (".0",   (0b0100,0b1011)),
     0b001: (".1",   (0b1001,)      ),
@@ -11,6 +14,7 @@ table_3b4b = {
     0b111: (".7",   (0b0001,0b1110, 0b1000, 0b0111)),
 }
 
+#Tabela de conversão 5b6b
 table_5b6b = {
     0b00000: ("D.0",    (0b100111, 0b011000)),
     0b00001: ("D.1",    (0b011101, 0b100010)),
@@ -46,6 +50,7 @@ table_5b6b = {
     0b11111: ("D.31",   (0b101011, 0b010100)),
 }
 
+#Função para extrair da tabela o código referente ao data e atualizar a disparidade
 def getCode(table, data, disparity = 0):
     name, encodings = table[data]
     
@@ -58,6 +63,7 @@ def getCode(table, data, disparity = 0):
 
     return name, encoding, disparity
 
+#Função para concatenar os códigos extraidos da tabela e finalizar a codificação 8b10b
 def encByte8b10b(byte, current_disparity=0, verbose=False):
     if verbose:
         print(f'Input Disparity = {current_disparity}')
@@ -77,6 +83,7 @@ def encByte8b10b(byte, current_disparity=0, verbose=False):
 
     return encoded, name_2+name_1, current_disparity
 
+#Função para codificar array de bytes
 def encArray8b10b(array, current_disparity = 0):
     names = []
     bits = []
@@ -85,3 +92,7 @@ def encArray8b10b(array, current_disparity = 0):
         names.append(name)
         bits.append(code)
     return (names, bits, current_disparity)
+
+#Cria um conjunto com os bits a serem transmitidos
+def createPackage(data, length):
+    return Bits().join(Bits(uint=x, length=length) for x in data) 
