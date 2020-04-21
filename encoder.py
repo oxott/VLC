@@ -96,3 +96,13 @@ def encArray8b10b(array, current_disparity = 0):
 #Cria um conjunto com os bits a serem transmitidos
 def createPackage(data, length):
     return Bits().join(Bits(uint=x, length=length) for x in data) 
+
+def decCode(table, code_bits):
+    for bits, (_, mapped_bits) in table.items():
+        if code_bits in mapped_bits:
+            return bits
+
+def decByte8b10b(code_bits):
+    bits1 = decCode(table_5b6b, ((code_bits>>4) & 0b111111))
+    bits2 = decCode(table_3b4b, ((code_bits>>0) & 0b1111))
+    return (bits2<<5) | bits1
