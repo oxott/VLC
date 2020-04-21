@@ -1,11 +1,11 @@
-#Código do Receptor
 #TODO: Implementar as estatísticas de comparação
 
-import time
 import serial
 import cv2
 import numpy as np
-
+from bitstring import ConstBitStream
+import VLC
+'''
 ser = serial.Serial(
         port='/dev/ttyUSB0',
         baudrate = 100e3,
@@ -15,8 +15,13 @@ ser = serial.Serial(
         timeout=1
 )
 
-#Lê os bits enviados pela entrada serial
 data = ser.read()
 
-#decodifica a imagem recebida pela serial
-decoded = cv2.imdecode(np.frombuffer(data, np.uint8), -1)
+'''
+received_bits = ConstBitStream(filename='img_bits_encoded.bin').bin
+n = 10 # chunk length
+received_chunks = [received_bits[i:i+n] for i in range(0, len(received_bits), n)]
+
+decoded = VLC.decArray8b10b(received_chunks)
+img = cv2.imdecode(np.frombuffer(decoded, np.uint8), -1)
+cv2.imwrite('macaquito.tiff', img)

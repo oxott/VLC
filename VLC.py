@@ -1,6 +1,7 @@
 #Arquivo com as funções necessárias para codificação
 
 from bitstring import Bits
+import numpy as np
 
 #Tabela de conversão 3b4b
 table_3b4b = {
@@ -106,3 +107,10 @@ def decByte8b10b(code_bits):
     bits1 = decCode(table_5b6b, ((code_bits>>4) & 0b111111))
     bits2 = decCode(table_3b4b, ((code_bits>>0) & 0b1111))
     return (bits2<<5) | bits1
+
+def decArray8b10b(code_array):
+    bits = np.zeros((len(code_array),), dtype='uint8')
+    for i, code in enumerate(code_array):
+        bits[i] = decByte8b10b(int(code, 2))
+    return bits
+
